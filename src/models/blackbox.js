@@ -73,7 +73,7 @@ export class Blackbox {
 
         const proxy = null;
 
-        let prefix = "@Claude-Sonnet-3.5";
+        let prefix = "@GPT-4o";
         if (!messages[0]['content'].startsWith(prefix)) {
             messages[0]['content'] = `${prefix} ${messages[0]['content']}`;
         }
