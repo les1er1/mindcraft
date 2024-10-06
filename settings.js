@@ -11,7 +11,7 @@ export default
         // add more profiles here, check ./profiles/ for more
         // more than 1 profile will require you to /msg each bot indivually
     ],
-    "load_memory": false, // load memory from previous session
+    "load_memory": true, // load memory from previous session
     "init_message": "Say hello world and your name", // sends to all on spawn
 
     "language": "en", // translate to/from this language. Supports these language names: https://cloud.google.com/translate/docs/languages
