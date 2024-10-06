@@ -10,6 +10,7 @@ import { GPT } from '../models/gpt.js';
 import { Claude } from '../models/claude.js';
 import { ReplicateAPI } from '../models/replicate.js';
 import { Local } from '../models/local.js';
+import { Blackbox } from '../models/blackbox.js'; 
 
 
 export class Prompter {
@@ -25,12 +26,14 @@ export class Prompter {
             chat = {model: chat};
             if (chat.model.includes('gemini'))
                 chat.api = 'google';
-            else if (chat.model.includes('gpt'))
+            else if (chat.model.includes('gpt-3.5-turbo'))
                 chat.api = 'openai';
             else if (chat.model.includes('claude'))
                 chat.api = 'anthropic';
             else if (chat.model.includes('meta/') || chat.model.includes('mistralai/') || chat.model.includes('replicate/'))
                 chat.api = 'replicate';
+            else if (chat.model.includes('GPT-4o'))
+                chat.api = 'blackbox';
             else
                 chat.api = 'ollama';
         }
@@ -47,12 +50,14 @@ export class Prompter {
             this.chat_model = new ReplicateAPI(chat.model, chat.url);
         else if (chat.api == 'ollama')
             this.chat_model = new Local(chat.model, chat.url);
+        else if (chat.api  == 'blackbox')
+            this.chat_model = new Blackbox(chat.model, chat.url);
         else
             throw new Error('Unknown API:', api);
 
         let embedding = this.profile.embedding;
         if (embedding === undefined) {
-            if (chat.api !== 'ollama')
+            if (chat.api !== 'ollama' && chat.api !== 'blackbox')
                 embedding = {api: chat.api};
             else
                 embedding = {api: 'none'};
@@ -70,6 +75,8 @@ export class Prompter {
             this.embedding_model = new ReplicateAPI(embedding.model, embedding.url);
         else if (embedding.api == 'ollama')
             this.embedding_model = new Local(embedding.model, embedding.url);
+        else if (embedding.api  == 'blackbox')
+            this.embedding_model = new Blackbox(embedding.model, embedding.url);
         else {
             this.embedding_model = null;
             console.log('Unknown embedding: ', embedding ? embedding.api : '[NOT SPECIFIED]', '. Using word overlap.');
